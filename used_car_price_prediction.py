@@ -9,8 +9,8 @@ matplotlib.style.use('ggplot')
 import sklearn
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
-from annotated_text import annotated_text
-
+from sklearn.metrics import r2_score
+np.random.seed(7)
 #Reading DataSet
 df=pd.read_csv("usedcardata.csv")
 del df["L"] #Deleting unnecessary column
@@ -24,8 +24,7 @@ x_train, x_test, y_train, y_test = train_test_split(dfx,dfy)
 
 #Visualizing the relationship between Power and Price of car
 df.plot(kind="scatter",x="Power",y="Price",figsize=(9,9))
-
-#Correlation between the variables
+ 
 
 #Converting categorical varliable Transmission to numeric
 train_trans=pd.get_dummies(x_train["Transmission"])
@@ -69,17 +68,16 @@ test_loc=pd.get_dummies(x_test["Location"])
 x_test=pd.concat([x_test,test_loc],axis=1)
 del x_test["Location"]
 
-#Viewing training dataset
-#x_train
 
-#Viewing test dataset
-#x_test
-
+print(x_train.head())
+print(x_test.head())
 #Calculating multiple linear regression
 mlr=linear_model.LinearRegression()
 mlr.fit(x_train,y_train)
 train_pred=mlr.predict(x_train)
-print("Coefficient",mlr.coef_)#Printing the coefficient
+test_pred = mlr.predict(x_test)
+r2 = r2_score(y_test, test_pred)
+print("R^2 score on test data:", r2)
 
 st.set_page_config(page_title="Used Car Price Prediction",page_icon=":car")
 st.title("Car Price Predictor")
